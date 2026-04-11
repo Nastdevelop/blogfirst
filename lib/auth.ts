@@ -51,13 +51,13 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       // Saat login pertama, user object tersedia
       if (user) {
-        token.id = user.id as string;
+        token.id = user.id
       }
       return token;
     },
     async session({ session, token }) {
       // Teruskan id dari token ke session
-      if (token && session.user) {
+      if (session.user) {
         session.user.id  = token.id as string
       }
       return session;
