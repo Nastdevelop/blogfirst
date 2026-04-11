@@ -1,4 +1,4 @@
-import prisma from "@/lib/prisma";
+import prisma from "@/lib/prisma";  
 
 export default async function PostDetail({params}: {params: Promise<{ id: string }>}) {
   const { id } = await params;
