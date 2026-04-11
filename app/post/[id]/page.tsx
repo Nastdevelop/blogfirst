@@ -6,7 +6,7 @@ export default async function PostDetail({params}: {params: Promise<{ id: string
   const post = await prisma.post.findUnique({where: { id: ambil }, include: { author: true }})
 
   if (!post) {
-    return <div>Post tidak ditemukan</div>;
+    return <div>Postingan Halu</div>;
   }
 
   return (
