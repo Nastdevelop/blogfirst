@@ -22,7 +22,7 @@ export async function POST(req: Request) {
     );
   }
 
-  const authorId = Number(session.user.id);
+  const authorId = Number((session.user as any).id);
 
   if (isNaN(authorId)) {
     return Response.json({ error: "Invalid user id" }, { status: 400 });
