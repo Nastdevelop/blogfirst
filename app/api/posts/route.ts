@@ -22,11 +22,17 @@ export async function POST(req: Request) {
     );
   }
 
+  const authorId = Number(session.user.id);
+
+  if (isNaN(authorId)) {
+    return Response.json({ error: "Invalid user id" }, { status: 400 });
+  }
+
   const post = await prisma.post.create({
     data: {
       title,
       content,
-      authorId: Number(session.user?.id),
+      authorId
     },
   });
 
