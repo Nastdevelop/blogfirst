@@ -1,4 +1,4 @@
-
+export const dynamic = "force-dynamic";
 import Postcard from "@/components/postcard";
 import prisma from "@/lib/prisma";
 
