@@ -38,9 +38,9 @@ export default function Navbar() {
           </>
         ) : (
           <>
-            <span className="text-sm bg-blue-500 font-semibold px-2 py-1">
-              username: {session.user?.name}
-            </span>
+            <Link href="/admin" className="text-sm bg-blue-500 font-semibold px-2 py-1">
+              Author : {session.user?.name}
+            </Link>
 
             <Link href="/create-post" className="bg-green-600 text-semibold px-2 py-1 rounded-[5px] font-semibold text-white">
               Create

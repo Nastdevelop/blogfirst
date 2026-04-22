@@ -4,6 +4,7 @@ import Link from "next/link"
 import { useState } from "react"; 
 import { useRouter } from "next/navigation";
 
+
 export default function RegisterPage() {
   const router = useRouter();
 
@@ -31,11 +32,10 @@ export default function RegisterPage() {
         alert(data.error);
         return;
       }
+      alert("OTP sudah dikirim ke email");
 
-      alert("Register berhasil!");
-
-      // 🔥 redirect ke home
-      router.push("/");
+      // kirim email ke halaman verify
+      router.push(`/verify?email=${email}`)
     } catch (error) {
       console.error(error);
       alert("Terjadi error");

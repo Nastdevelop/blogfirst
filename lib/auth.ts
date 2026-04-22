@@ -21,12 +21,21 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Email dan password wajib");
         }
 
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          throw new Error("Email tidak valid");
+        }
+
         const user = await prisma.user.findUnique({
           where: { email },
         });
 
         if (!user) {
           throw new Error("User tidak ditemukan");
+        }
+
+        // 🔥 FIX UTAMA
+        if (!user.isVerified) {
+          throw new Error("Akun belum diverifikasi");
         }
 
         const isValid = await bcrypt.compare(password, user.password);
@@ -47,18 +56,18 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
   },
+
   callbacks: {
     async jwt({ token, user }) {
-      // Saat login pertama, user object tersedia
       if (user) {
-        token.id = user.id
+        token.id = user.id;
       }
       return token;
     },
+
     async session({ session, token }) {
-      // Teruskan id dari token ke session
       if (session.user) {
-        session.user.id  = token.id as string
+        session.user.id = token.id as string;
       }
       return session;
     },
