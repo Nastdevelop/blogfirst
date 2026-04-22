@@ -1,11 +1,14 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
-export default function VerifyPage() {
-    const params = useSearchParams();
-const email = params.get("email");
+export default function VerifyPage({
+  searchParams,
+}: {
+  searchParams: { email?: string };
+}) {
+  const email = searchParams.email;
+
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -23,7 +26,6 @@ const email = params.get("email");
     });
 
     const data = await res.json();
-
     setLoading(false);
 
     if (!res.ok) {
@@ -37,18 +39,17 @@ const email = params.get("email");
   return (
     <div className="min-h-screen flex items-center justify-center bg-zinc-100">
       <div className="bg-white shadow-lg rounded-xl px-8 py-10 w-[350px] flex flex-col gap-5">
-
         <h1 className="text-2xl font-bold text-center">
           Verifikasi OTP
         </h1>
 
         <p className="text-sm text-zinc-500 text-center">
-          Masukkan email dan kode OTP yang dikirim ke email kamu
+          Masukkan kode OTP yang dikirim ke email kamu
         </p>
 
-        <span className="block font-semibold text-zinc-800 mt-1">
-    {email}
-  </span>
+        <span className="block font-semibold text-zinc-800 mt-1 text-center">
+          {email}
+        </span>
 
         <input
           type="text"
@@ -64,7 +65,6 @@ const email = params.get("email");
         >
           {loading ? "Memverifikasi..." : "Verify"}
         </button>
-
       </div>
     </div>
   );
