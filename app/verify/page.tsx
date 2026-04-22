@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, use } from "react";
 
 export default function VerifyPage({
   searchParams,
 }: {
-  searchParams: { email?: string };
+  searchParams: Promise<{ email?: string }>;
 }) {
-  const email = searchParams.email;
+  const params = use(searchParams); // 🔥 unwrap Promise
+  const email = params.email;
 
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
@@ -15,25 +16,36 @@ export default function VerifyPage({
   const handleVerify = async () => {
     if (loading) return;
 
-    setLoading(true);
-
-    const res = await fetch("/api/auth/verify", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, code }),
-    });
-
-    const data = await res.json();
-    setLoading(false);
-
-    if (!res.ok) {
-      alert(data.error);
+    if (!code) {
+      alert("Kode OTP wajib diisi");
       return;
     }
 
-    alert("Akun berhasil diaktifkan!");
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/auth/verify", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, code }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.error);
+        return;
+      }
+
+      alert("Akun berhasil diaktifkan!");
+    } catch (err) {
+      console.error("VERIFY ERROR:", err);
+      alert("Terjadi error");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -47,13 +59,14 @@ export default function VerifyPage({
           Masukkan kode OTP yang dikirim ke email kamu
         </p>
 
-        <span className="block font-semibold text-zinc-800 mt-1 text-center">
+        <span className="block font-semibold text-zinc-800 text-center">
           {email}
         </span>
 
         <input
           type="text"
           placeholder="Kode OTP"
+          value={code}
           onChange={(e) => setCode(e.target.value)}
           className="border border-zinc-300 rounded-lg px-4 py-2 tracking-widest text-center text-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
