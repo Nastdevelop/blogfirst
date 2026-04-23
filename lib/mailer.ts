@@ -1,18 +1,26 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend"; 
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function sendOTP(email: string, code: string) {
-  const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT),
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
-    },
-  });
+  try {
+    await resend.emails.send({
+      from: "OTP App <onboarding@resend.dev>", // default domain Resend
+      to: email,
+      subject: "Kode OTP Verifikasi",
+      html: `
+        <div style="font-family: sans-serif">
+          <h2>Verifikasi Akun</h2>
+          <p>Kode OTP kamu:</p>
+          <h1 style="letter-spacing: 4px">${code}</h1>
+          <p>Kode berlaku 5 menit</p>
+        </div>
+      `,
+    });
 
-  await transporter.sendMail({
-    to: email,
-    subject: "OTP Verifikasi",
-    text: `Kode OTP kamu: ${code}`,
-  });
+    console.log("EMAIL SENT ✔️");
+  } catch (err) {
+    console.error("RESEND ERROR:", err);
+    throw err;
+  }
 }
