@@ -5,7 +5,7 @@ import { useState, use } from "react";
 export default function VerifyPage({
   searchParams,
 }: {
-  searchParams: Promise<{ email?: string }>;
+  searchParams: Promise<{ email?: string }>
 }) {
   const params = use(searchParams); // 🔥 unwrap Promise
   const email = params.email;
