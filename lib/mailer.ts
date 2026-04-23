@@ -1,4 +1,4 @@
-import { Resend } from "resend"; 
+import { Resend } from "resend";  
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -13,7 +13,7 @@ export async function sendOTP(email: string, code: string) {
           <h2>Verifikasi Akun</h2>
           <p>Kode OTP kamu:</p>
           <h1 style="letter-spacing: 4px">${code}</h1>
-          <p>Kode berlaku 5 menit</p>
+          <p>jangan berikan code ini pada siapapun</p>
         </div>
       `,
     });
