@@ -1,25 +1,23 @@
 "use client";
 
-import { useState, use } from "react";
-import { useRouter } from "next/router";
+import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
-export default function VerifyPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ email?: string }>
-}) {
-  const params = use(searchParams)
-  const router = useRouter()
-  const email = params.email; 
+export default function VerifyPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const email = searchParams.get("email");
+
   const [resending, setResending] = useState(false);
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleResend = async () => {
     if (resending) return;
-  
+
     setResending(true);
-  
+
     const res = await fetch("/api/auth/resend-otp", {
       method: "POST",
       headers: {
@@ -27,16 +25,16 @@ export default function VerifyPage({
       },
       body: JSON.stringify({ email }),
     });
-  
+
     const data = await res.json();
-  
+
     setResending(false);
-  
+
     if (!res.ok) {
       alert(data.error);
       return;
     }
-  
+
     alert("OTP baru dikirim ke email kamu");
   };
 
@@ -67,7 +65,7 @@ export default function VerifyPage({
       }
 
       alert("Akun berhasil diaktifkan!");
-      router.push('/')
+      router.push("/");
     } catch (err) {
       console.error("VERIFY ERROR:", err);
       alert("Terjadi error");
@@ -76,8 +74,12 @@ export default function VerifyPage({
     }
   };
 
+  if (!email) {
+    return <p className="text-white text-center mt-10">Email tidak ditemukan</p>;
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-zinc-800">    
+    <div className="min-h-screen flex items-center justify-center bg-zinc-800">
       <div className="bg-white shadow-lg rounded-xl px-8 py-10 w-[350px] flex flex-col gap-5">
         <h1 className="text-2xl font-bold text-center text-zinc-800">
           Verifikasi OTP
@@ -106,16 +108,20 @@ export default function VerifyPage({
         >
           {loading ? "Memverifikasi..." : "Verify"}
         </button>
+
         <div className="flex mx-auto items-center gap-1">
-        <p className="text-black text-center text-[12px] font-medium">Belum menerima kode otp?</p>
-      <button
-  onClick={handleResend}
-  disabled={resending}
-  className="text-sm text-blue-500 text-[11px] cursor-pointer hover:underline disabled:opacity-50"
->
-  {resending ? "Mengirim ulang..." : "Kirim ulang."}
-</button>
-      </div>
+          <p className="text-black text-[12px] font-medium">
+            Belum menerima kode otp?
+          </p>
+
+          <button
+            onClick={handleResend}
+            disabled={resending}
+            className="text-blue-500 text-[11px] cursor-pointer hover:underline disabled:opacity-50"
+          >
+            {resending ? "Mengirim ulang..." : "Kirim ulang"}
+          </button>
+        </div>
       </div>
     </div>
   );
