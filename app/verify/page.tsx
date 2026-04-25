@@ -7,11 +7,36 @@ export default function VerifyPage({
 }: {
   searchParams: Promise<{ email?: string }>
 }) {
-  const params = use(searchParams); // 🔥 unwrap Promise
-  const email = params.email;
-
+  const params = use(searchParams)
+  const email = params.email; 
+  const [resending, setResending] = useState(false);
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const handleResend = async () => {
+    if (resending) return;
+  
+    setResending(true);
+  
+    const res = await fetch("/api/auth/resend-otp", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email }),
+    });
+  
+    const data = await res.json();
+  
+    setResending(false);
+  
+    if (!res.ok) {
+      alert(data.error);
+      return;
+    }
+  
+    alert("OTP baru dikirim ke email kamu");
+  };
 
   const handleVerify = async () => {
     if (loading) return;
@@ -49,9 +74,9 @@ export default function VerifyPage({
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-zinc-100">
+    <div className="min-h-screen flex items-center justify-center bg-zinc-800">    
       <div className="bg-white shadow-lg rounded-xl px-8 py-10 w-[350px] flex flex-col gap-5">
-        <h1 className="text-2xl font-bold text-center">
+        <h1 className="text-2xl font-bold text-center text-zinc-800">
           Verifikasi OTP
         </h1>
 
@@ -68,7 +93,7 @@ export default function VerifyPage({
           placeholder="Kode OTP"
           value={code}
           onChange={(e) => setCode(e.target.value)}
-          className="border border-zinc-300 rounded-lg px-4 py-2 tracking-widest text-center text-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="border border-zinc-300 rounded-lg px-4 py-2 tracking-widest text-black text-center text-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 
         <button
@@ -78,6 +103,16 @@ export default function VerifyPage({
         >
           {loading ? "Memverifikasi..." : "Verify"}
         </button>
+        <div className="flex mx-auto items-center gap-1">
+        <p className="text-black text-center text-[12px] font-medium">Belum menerima kode otp?</p>
+      <button
+  onClick={handleResend}
+  disabled={resending}
+  className="text-sm text-blue-500 text-[11px] cursor-pointer hover:underline disabled:opacity-50"
+>
+  {resending ? "Mengirim ulang..." : "Kirim ulang."}
+</button>
+      </div>
       </div>
     </div>
   );

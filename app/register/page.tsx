@@ -10,7 +10,7 @@ export default function RegisterPage() {
 
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState("")
 
   const handleRegister = async () => {
     try {
