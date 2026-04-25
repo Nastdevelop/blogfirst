@@ -18,6 +18,8 @@ export async function sendOTP(email: string, code: string) {
     });
 
     console.log("EMAIL SENT:", info.response);
+    console.log("SMTP_USER:", process.env.SMTP_USER);
+console.log("SMTP_PASS:", process.env.SMTP_PASS ? "ADA" : "KOSONG");
   } catch (error) {
     console.error("EMAIL ERROR FULL:", error);
     throw error;
