@@ -23,7 +23,7 @@ export default function Postcard({ post }: { post: devinisi }) {
         </p>
 
         <p className="mt-2 text-zinc-700 line-clamp-2">
-        {post.content?.slice(0, 50)}...
+        {post.content?.slice(0, 40)}...
         </p>
       </div>
     </div>
