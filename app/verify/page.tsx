@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, use } from "react";
+import { useRouter } from "next/router";
 
 export default function VerifyPage({
   searchParams,
@@ -8,6 +9,7 @@ export default function VerifyPage({
   searchParams: Promise<{ email?: string }>
 }) {
   const params = use(searchParams)
+  const router = useRouter()
   const email = params.email; 
   const [resending, setResending] = useState(false);
   const [code, setCode] = useState("");
@@ -65,6 +67,7 @@ export default function VerifyPage({
       }
 
       alert("Akun berhasil diaktifkan!");
+      router.push('/')
     } catch (err) {
       console.error("VERIFY ERROR:", err);
       alert("Terjadi error");
